@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f2f2f2;
+        }
+        h2 {
+            color: #2c3e50;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 30px;
+            width: 100%;
+            background-color: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add College</h2>
+    <form id="collegeForm">
+        <label>College Name:</label>
+        <input type="text" id="name" required>
+
+        <label>Address:</label>
+        <input type="text" id="address" required>
+
+        <button type="submit">Add College</button>
+    </form>
+
+    <h2>All Colleges</h2>
+    <table id="collegeTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>College Name</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Fetch and display colleges
+        function loadColleges() {
+            fetch("/college/all")
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#collegeTable tbody");
+                    tableBody.innerHTML = "";
+                    data.forEach(c => {
+                        const row = `<tr>
+                            <td>${c.id}</td>
+                            <td>${c.name}</td>
+                            <td>${c.address}</td>
+                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                });
+        }
+
+        // Add college
+        document.getElementById("collegeForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value;
+            const address = document.getElementById("address").value;
+
+            fetch("/college/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, address })
+            })
+            .then(() => {
+                alert("College added successfully!");
+                document.getElementById("collegeForm").reset();
+                loadColleges();
+            });
+        });
+
+        // Load when page opens
+        loadColleges();
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Colleges</title>
+</head>
+<body style="font-family: Arial; background-color: #f4f6f8;">
+    <h2>All Colleges</h2>
+    <button onclick="loadColleges()">Load Colleges</button>
+    <table border="1" cellpadding="8" cellspacing="0" style="margin-top:10px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody id="collegeTable"></tbody>
+    </table>
+
+    <script>
+        async function loadColleges() {
+            const response = await fetch("/colleges");
+            const data = await response.json();
+            const table = document.getElementById("collegeTable");
+            table.innerHTML = "";
+            data.forEach(college => {
+                table.innerHTML += `
+                    <tr>
+                        <td>${college.id}</td>
+                        <td>${college.name}</td>
+                        <td>${college.address}</td>
+                        <td>${college.email}</td>
+                        <td>${college.phone}</td>
+                    </tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
